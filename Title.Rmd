@@ -1,0 +1,184 @@
+---
+title: "Unveiling Risk: A Deep Dive into Fannie Mae for Investors"
+author: Joo Young Park
+format: html
+output: bookdown::html_document2
+toc: false
+editor: visual
+---
+
+```{=html}
+<!This block assists in formatting the title, font size, chart caption, etc.– –>
+<style type="text/css">
+  .title {
+    text-align: left;
+}
+body{ /* Normal  */
+      font-size: 16px;
+      margin: 2.5cm;
+      top: 1.5cm;
+      text-align: justify;
+  }
+  .caption {
+    font-size: big;
+    text-align: center;
+    position: above;
+}
+</style>
+```
+```{css plotly-caption, echo = FALSE}
+/*Include this block if you like the chart caption at the top instead of the bottom.*/
+div.figure {
+  display: table;
+}
+div.figure p {
+  display: table-caption;
+  caption-side: top;
+}
+```
+
+------------------------------------------------------------------------
+
+In the ever-shifting landscape of investment opportunities, Fannie Mae stands as a crucial entity within the housing market, attracting keen attention from investors seeking stability and growth. Against the backdrop of economic upheavals, notably the Subprime mortgage crisis of 2007, Fannie Mae weathered significant financial turmoil, prompting governmental intervention to facilitate recovery. Now, more than a decade later, although it seems that Fannie Mae has substantially recovered from its threats from the past, investors may find themselves questioning the viability of investing in Fannie Mae. This report serves as a comprehensive reference point for such investors, offering a comparative analysis of Fannie Mae's reports from 2007 and 2019. By examining the organization's journey of recovery and transformation, we aim to provide valuable insights that can inform investment decisions and strategies in today's dynamic financial landscape.
+
+Figure \@ref(fig:fig1) illustrates default rates from 2000 to 2023, providing insights into Fannie Mae's credit risk management over two decades. Notable years are highlighted: 2007, marked by a red vertical line, symbolizing the onset of the Subprime mortgage crisis, and 2019, denoted by a blue line, representing the post-recovery period. Default rates rose steadily until 2007, peaking during the crisis, before sharply declining to maintain stability thereafter. This visual representation contextualizes Fannie Mae's default rates amidst significant historical events, aiding investors in assessing risk and making informed investment decisions.
+
+Figure \@ref(fig:fig2) presents two interactive US maps showcasing default rates by state for the years 2007 and 2019. The consistent color scales employed in both maps facilitate a clear comparison between the two periods. In 2007, the map illustrates a stark contrast with deeper shades of red, indicating high default rates across several states, denoting significant defaulting risk. However, in 2019, the entirety of the map is uniformly colored in shades of pink, signifying default rates generally lower than 1% across all states. This marked reduction in default rates underscores the efficacy of measures taken post-crisis to mitigate risk and enhance stability within the housing market. The visual depiction of this shift underscores the progress made over the years, providing valuable insights for investors and policymakers alike.
+
+Figure \@ref(fig:fig3) provides a comparative analysis of borrower creditworthiness over time. A higher FICO score indicates lower credit risk, making borrowers less likely to default on their loans and thus reducing risk for investors. The plot reveals that in 2019, the median and overall distribution of FICO scores are notably higher compared to 2007, indicating a general improvement in borrower credit profiles. This upward trend in FICO scores suggests that borrowers associated with Fannie Mae loans in 2019 are generally more creditworthy than their counterparts in 2007. Consequently, this lends support to the notion that Fannie Mae represents a reliable investment opportunity for investors seeking reduced risk in their portfolios.
+
+Next, we look at the loan purpose distribution on Figure \@ref(fig:fig4). An intriguing trend emerges as the distribution among these three options shifts towards refinancing rather than cash-out refinance. This shift holds significant implications, particularly in the context of risk assessment. According to the [report](https://www.fhfaoig.gov/sites/default/files/WPR-2021-008.pdf) by the Federal Housing Finance Agency Office of Inspector General, cash-out refinancing is regarded as riskier compared to standard refinancing. The observed decrease in the proportion of cash-out refinances suggests a strategic shift towards lower-risk loan products within Fannie Mae's portfolio. This transition serves as compelling evidence that Fannie Mae's default risk has been mitigated over time, further solidifying its reputation as a reliable investment option for stakeholders in the housing market.
+
+The histogram in Figure \@ref(fig:fig5) illustrates the distribution of debt-to-income (DTI) ratios for loans purchased by Fannie Mae in 2007 and 2019. Notably, the 2019 DTI distribution shows a discontinuation after the 50% mark, reflecting Fannie Mae's post-2007 strategy of imposing DTI thresholds on loan purchases. Before the crisis, Fannie Mae accepted loans with DTI ratios up to 65%, but afterward, this threshold was reduced to 45%. By 2018, it was raised to 50%, as reflected in the histogram, a strategy discussed in a [perspective article](https://www.fanniemae.com/research-and-insights/perspectives/2018-vs-2008-better-equipped-next-mortgage-market-downturn) authored by Fannie Mae's Vice President. Additionally, there's a notable increase in loans with DTI ratios around 40% in 2019, indicating Fannie Mae's improved financial stability and willingness to take on more risk—a positive signal for investors.
+
+In conclusion, the comprehensive analysis presented in this report underscores Fannie Mae's remarkable recovery and transformation over the years. From weathering the storm of the Subprime mortgage crisis to implementing strategic measures aimed at enhancing stability and mitigating risk, Fannie Mae has emerged as a reliable investment option within the housing market. Investors can draw valuable insights from the comparative analysis of Fannie Mae's performance in 2007 and 2019, enabling them to make informed investment decisions in today's dynamic financial landscape.
+
+(Word count: 783)
+
+### Figure Appendix {.unnumbered}
+
+```{r, include = FALSE}
+# This is the code block for tasks that do not generate charts, such as loading data, importing packages, data cleaning, and variable manipulation. 
+# You can include as many of these blocks as needed. 
+# Adding "include = FALSE" will prevent the code block from appearing in the HTML output file.
+# You can use "read_rds" to load in the data.
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+library(ggiraph)
+library(patchwork)
+library(usmap)
+library(scales)
+fm_2007 <- read_rds('data_sample_2007Q4.rds') %>% mutate(year = 2007)
+fm_2019 <- read_rds('data_sample_2019Q4.rds') %>% mutate(year = 2019)
+fm_combine <- rbind(fm_2007, fm_2019) %>% mutate(year = factor(year, levels = c(2007, 2019)))
+default_rate <- read_csv('default_rate_ts.csv')
+default_rate <- default_rate[,1:2]
+default_rate$Date <- as.Date(default_rate$Date, "%m/%d/%Y")
+```
+
+```{r fig1, echo = FALSE, fig.width=10, fig.height = 4, fig.cap="Fannie Mae's Default Rate (2000-Present)"}
+# This is the code block for producing charts. 
+# You can include as many of these blocks as needed. 
+# By adding "echo = FALSE," only the chart and not the code will be included in the output HTML file.
+# To modify the size of your chart, adjust the values of fig.width and fig.height.
+# Use fig.cap to specify the caption for your chart.
+# You can insert a blank line between charts by adding "<br>" below the block.
+default_rate %>% ggplot(aes(x = Date, y = `Default rate`)) +
+  geom_line(aes(group = 1), lwd = 1.3) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90),
+        panel.grid.minor = element_blank()) +
+  geom_vline(xintercept = default_rate$Date[default_rate$`Default rate` == 
+                                            max(default_rate$`Default rate`)], 
+             col = 'red', lwd = 1.5) +
+  geom_vline(xintercept = default_rate$Date[default_rate$Date == '2019-01-01'],
+             col = 'blue', lwd = 1.5)
+```
+
+<br>
+
+```{r fig2, echo = FALSE, fig.width=10, fig.height = 4, fig.cap = "Default Rates by State, 2007 and 2019"}
+state_default_2007 <- fm_2007 %>% group_by(STATE) %>% 
+  summarise(mean_default = mean(DEFAULT_FLAG)) %>% 
+  rename(state = STATE) %>% 
+  mutate(statelabel = paste(" Year: 2007\n State: ", state, "\n", 
+                            "Default Rate:", round(mean_default*100, 2), "%"))
+
+p_default_2007 <- plot_usmap(regions = "state", data = state_default_2007, 
+                         values = "mean_default", color = "white") + 
+  scale_fill_continuous(name="", 
+                        low = "rosybrown1", high = "red3",
+                        limits = c(0, 0.4))+
+  theme(plot.title = element_text(size=10,hjust=0.5),
+        legend.position = "none") +
+  aes(text = statelabel)
+
+
+state_default_2019 <- fm_2019 %>% group_by(STATE) %>% 
+  summarise(mean_default = mean(DEFAULT_FLAG)) %>% 
+  rename(state = STATE) %>% 
+  mutate(statelabel = paste(" Year: 2019\n State: ", state, "\n", 
+                      "Default Rate:", round(mean_default*100,2), "%"))
+
+
+#Workaround data manipulation to prevent identical values not showing hover tooltips for plotly; "jittering" the states with values 0
+for(n in 1:length(state_default_2019$state)){
+  state_default_2019[n, 'mean_default'] = ifelse(state_default_2019[n, 'mean_default'] == 0, 
+                                                 runif(1, 0, 0.00000001), state_default_2019[n, 'mean_default'])
+}
+
+
+p_default_2019 <- plot_usmap(regions = "state", data = state_default_2019, 
+                         values = "mean_default", color = "white") + 
+  scale_fill_continuous(name="Average Default rate", 
+                        low = "rosybrown1", high = "red3",
+                        limits = c(0, 0.4))+
+  aes(text = statelabel)
+
+
+
+subplot(ggplotly(p_default_2007, tooltip = 'statelabel') %>% style(hoveron = "fills"), 
+        ggplotly(p_default_2019, tooltip = 'statelabel') %>% style(hoveron = "fills"))
+git config --global user.name "Your Name"
+```
+
+<br>
+
+```{r fig3, echo = FALSE, fig.width=10, fig.height = 4, fig.cap = "FICO Score Distribution"}
+fico_2007 <- fm_2007[!is.na(fm_2007$CSCORE_B),] %>% ggplot(aes(x = "", y=CSCORE_B)) + geom_boxplot(width = 0.3) + labs(title = '2007 FICO', x= "", y = "FICO Score") + ylim(c(400, 850)) + theme_classic()
+fico_2019 <- fm_2019[!is.na(fm_2019$CSCORE_B),] %>% ggplot(aes(x = "", y=CSCORE_B)) + geom_boxplot(width = 0.3) + labs(title = '2019 FICO', x="", y = "") + ylim(c(400, 850)) + theme_classic()
+fico_2007 + fico_2019
+```
+
+<br>
+
+```{r fig4, echo = FALSE, fig.width=10, fig.height = 4, fig.cap = "Mortgage Purposes"}
+fm_combine %>% 
+  ggplot(aes(fill = PURPOSE, x = year)) + 
+  geom_bar(position = "stack", width = 0.3) + 
+  scale_fill_discrete(name = "Purpose", labels = c("Cash-out Ref.", 'Purchase', 'Refinance')) + 
+  geom_text(aes(label = after_stat(count)), stat = "count", position = position_stack(vjust = 0.5), size = 3) + 
+  theme_classic()
+```
+
+<br>
+
+```{r fig5, echo = FALSE, fig.width=10, fig.height = 4, fig.cap = "DTI Distribution"}
+hist07 <- fm_2007[!is.na(fm_2007$DTI),] %>% 
+  ggplot(aes(x = DTI)) + 
+  geom_histogram(binwidth = 5,breaks = seq(0, 65, by = 5), fill = 'orchid2') + 
+  scale_x_continuous(limits=c(0,65)) + 
+  theme_classic() + labs(title = 'DTI Distribution, 2007', x="")
+
+hist19 <- fm_2019[!is.na(fm_2019$DTI),] %>% 
+  ggplot(aes(x = DTI)) + 
+  geom_histogram(binwidth = 5,breaks = seq(0, 65, by = 5), fill = 'turquoise3') + 
+  labs(title = 'DTI Distribution, 2019', x="DTI (%)") + 
+  scale_x_continuous(limits=c(0,65)) + theme_classic()
+
+
+hist07/hist19
+```
+
+<br>
