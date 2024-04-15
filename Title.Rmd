@@ -140,7 +140,7 @@ p_default_2019 <- plot_usmap(regions = "state", data = state_default_2019,
 
 subplot(ggplotly(p_default_2007, tooltip = 'statelabel') %>% style(hoveron = "fills"), 
         ggplotly(p_default_2019, tooltip = 'statelabel') %>% style(hoveron = "fills"))
-git config --global user.name "Your Name"
+
 ```
 
 <br>
